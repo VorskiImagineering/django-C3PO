@@ -1,0 +1,67 @@
+{% extends "django_c3po/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>{% trans 'key' %}</th>
+                <th>{% trans 'value' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{% trans 'url' %}</td>
+                <td><a target="_blank" rel="external" href="{{ settings.URL }}">{{ settings.URL }}</a></td>
+            </tr>
+            <tr>
+                <td>{% trans 'languages' %}</td>
+                <td>{{ settings.LANGUAGES|join:", " }}</td>
+            </tr>
+            <tr>
+                <td>{% trans 'email' %}</td>
+                <td>{{ settings.EMAIL }}</td>
+            </tr>
+            <tr>
+                <td>{% trans 'header' %}</td>
+                <td>{{ settings.HEADER }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <form method="post" action=".">
+        {% csrf_token %}
+        <div>
+            <label for="id_git_message">{% trans 'Git message' %}: </label>
+            <input type="text" value="" name='git_message' id="id_git_message" />
+        </div>
+        <div class="btn-group">
+            <button type="submit" class="btn btn-success" name="action" value="synchronize">{% trans 'Synchronize' %}</button>
+            <button type="submit" class="btn" name="action" value="makemessages">{% trans 'Make messages' %}</button>
+        </div>
+        <div class="btn-group">
+            <button type="submit" class="btn" name="action" value="publish">{% trans 'Publish' %}</button>
+            <button type="submit" class="btn btn-danger" name="action" value="reset">{% trans 'Reset' %}</button>
+        </div>
+    </form>
+
+    {% if error %}
+        <p class="alert alert-error">{{ error }}</p>
+    {% endif %}
+
+    {% if info %}
+        <p class="alert alert-info">{{ info }}</p>
+    {% endif %}
+
+    <p class="text-info">
+        <ul class="">
+            <li><strong>{% trans 'Synchronize' %}</strong> - {% trans 'Synchronizes translations in local files with GDoc state. If project has new expressions which are not in the spreadsheet, GDoc is updated with this entries.' %}</li>
+            <li><strong>{% trans 'Make messages' %}</strong> - {% trans 'Runs makemessages command updating po files with new expressions to translate.' %}</li>
+            <li><strong>{% trans 'Publish' %}</strong> - {% trans 'Pushes current po files to git repository.' %}</li>
+            <li><strong>{% trans 'Reset' %}</strong> - {% trans 'Reverts current changes and checkouts project to last commit. Note that changes are also reverted in spreadsheet, so all new translations will be lost.' %}</li>
+        </ul>
+    </p>
+
+{% endblock %}

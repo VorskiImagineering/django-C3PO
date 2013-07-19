@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load i18n %}
+    <title>{% block title %}{% trans "Django-C3PO" %}{% endblock %}</title>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'django_c3po/css/bootstrap.min.css' %}"/>
+    <script type="text/javascript" src="{% static 'django_c3po/js/bootstrap.min.js' %}"></script>
+</head>
+<body>
+
+<div class="navbar navbar-inverse">
+    <div class="navbar-inner">
+        <a class="brand" href="{% url 'c3po_index' %}">{% trans "Django-C3PO" %}</a>
+        {% if user.is_authenticated %}
+        <ul class="nav">
+            <li><a href="#"><i class="icon-user icon-white"></i> {{ user.username }}</a></li>
+            <li><a href="{% url 'django.contrib.auth.views.logout' %}">{% trans "Logout" %}</a></li>
+        </ul>
+        {% endif %}
+    </div>
+</div>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
