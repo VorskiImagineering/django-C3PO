@@ -5,13 +5,16 @@ from setuptools import setup
 
 setup(
     name='django-C3PO',
-    version='0.0.1-dev',
+    version='0.0.1',
     packages=['django_c3po'],
-    url='http://www.hiddendata.co/',
+    url='https://github.com/VorskiImagineering/django-C3PO',
     license='MIT',
     author=u'Marek Nogacki',
     author_email='m.nogacki@hiddendata.co',
-    description='Django application for translators using c3po module',
+    description='''django-C3PO is a Django application using C3PO - module responsible for converting .po files from
+locale folder with translations to .ods format and sending them to Google Spreadsheets.\n
+This Django application provides panel where user can synchronize translations with GDocs and it gives possibility
+to push all translations on git and checkout last commit.''',
     install_requires=['gdata==2.0.18', 'c3po==0.0.1'],
     classifiers=[
         'Environment :: Web Environment',
@@ -25,4 +28,5 @@ setup(
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
     include_package_data=True,
+    download_url='https://github.com/VorskiImagineering/django-C3PO/tarball/master',
 )
