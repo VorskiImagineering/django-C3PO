@@ -6,6 +6,8 @@ with translations to .ods format and sending them to Google Spreadsheets.
 This Django application provides panel where user can synchronize translations with GDocs and it gives
 possibility to push all translations on git and checkout last commit.
 
+After synchronization django-C3PO performs server restart, which is needed to reload compiled .mo files into application.
+
 Quick start
 -----------
 
@@ -55,7 +57,8 @@ After configuration and logging into the translator's panel, you will see basic 
 link to the spreadsheet defined in settings. User can manage app translations with three actions:
 
  - Synchronize - Synchronized translations from local files with GDoc state. If project has new expressions
-   which are not in the spreadsheet, GDoc is updated with this entries.
+   which are not in the spreadsheet, GDoc is updated with this entries. Remember that after this acction
+   server will be restarted.
  - Make messages - Runs makemessages command updating po files with new expressions to translate.
  - Publish - Pushes current po files to git repository.
  - Reset - Reverts current changes and checkouts project to last commit. Note that changes are also reverted
