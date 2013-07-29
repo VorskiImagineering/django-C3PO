@@ -43,8 +43,8 @@ class IndexView(TemplateView):
     def get_context_data(self, *args, **kwargs):
         ret = super(IndexView, self).get_context_data(*args, **kwargs)
         ret['settings'] = settings.C3PO
-        ret['error'] = self.request.session.get('error', None)
-        ret['info'] = self.request.session.get('info', None)
+        ret['error'] = self.request.session.pop('error', None)
+        ret['info'] = self.request.session.pop('info', None)
         return ret
 
     def post(self, request, *args, **kwargs):
