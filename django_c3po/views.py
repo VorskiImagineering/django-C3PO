@@ -7,7 +7,7 @@ import os
 from django.contrib.auth.decorators import permission_required
 from django.conf import settings
 from django.core import management
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic.base import TemplateView
@@ -43,6 +43,8 @@ class IndexView(TemplateView):
     def get_context_data(self, *args, **kwargs):
         ret = super(IndexView, self).get_context_data(*args, **kwargs)
         ret['settings'] = settings.C3PO
+        ret['error'] = self.request.session.pop('error', None)
+        ret['info'] = self.request.session.pop('info', None)
         return ret
 
     def post(self, request, *args, **kwargs):
@@ -60,19 +62,18 @@ class IndexView(TemplateView):
         return self.render_podocs_response(request, error=error)
 
     def render_podocs_response(self, request, info=None, error=None, *args, **kwargs):
-        return render(request, self.template_name, {
-            'settings': settings.C3PO,
-            'error': error,
-            'info': info
-        })
+        request.session['error'] = error
+        request.session['info'] = info
+        return redirect('c3po_index')
 
     def synchronize(self, request, *args, **kwargs):
-        communicator = Communicator(email, password, url, source, temp_path)
+        communicator = Communicator(email, password, url, source, temp_path,
+                                    languages, locale_root, po_files_path, header)
 
         if not os.path.exists(locale_root):
             os.makedirs(locale_root)
 
-        communicator.synchronize(languages, locale_root, po_files_path, header)
+        communicator.synchronize()
 
         management.call_command('compilemessages', verbosity=0)
 
