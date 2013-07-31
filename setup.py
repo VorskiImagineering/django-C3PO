@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='django-C3PO',
-    version='0.1.0',
+    version='0.1.1',
     packages=['django_c3po'],
     url='https://github.com/VorskiImagineering/django-C3PO',
     license='MIT',
