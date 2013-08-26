@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='django-C3PO',
-    version='0.1.2',
+    version='0.1.4',
     packages=['django_c3po'],
     url='https://github.com/VorskiImagineering/django-C3PO',
     license='MIT',
@@ -19,7 +19,7 @@ to push all translations on git and checkout last commit.''',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
-        'IntendedAudience :: Developers',
+        'Intended Audience :: Developers',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.6',

@@ -11,7 +11,7 @@ class Translator(models.Model):
     """
 
     class Meta:
-        abstract = True
+        # abstract = True
         permissions = (
             ('can_translate', 'Can publish and retrieve translations'),
         )

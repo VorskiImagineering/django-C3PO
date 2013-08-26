@@ -39,8 +39,6 @@ class IndexView(TemplateView):
 
     @method_decorator(permission_required('django_c3po.can_translate', login_url=reverse_lazy(settings.LOGIN_URL)))
     def dispatch(self, request, *args, **kwargs):
-        # if not request.user.has_perm('django_c3po.can_translate'):
-        #     return redirect(settings.LOGIN_URL)
         return super(IndexView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
