@@ -30,6 +30,7 @@ po_files_path = settings.C3PO['PO_FILES_PATH']
 header = settings.C3PO['HEADER']
 git_repository = settings.C3PO['GIT_REPOSITORY']
 git_branch = settings.C3PO['GIT_BRANCH']
+login_url = settings.C3PO['LOGIN_URL']
 
 
 class IndexView(TemplateView):
@@ -37,7 +38,7 @@ class IndexView(TemplateView):
 
     actions_allowed = ['synchronize', 'reset', 'makemessages', 'publish']
 
-    @method_decorator(permission_required('django_c3po.can_translate', login_url=reverse_lazy(settings.LOGIN_URL)))
+    @method_decorator(permission_required('django_c3po.can_translate', login_url=reverse_lazy(login_url)))
     def dispatch(self, request, *args, **kwargs):
         return super(IndexView, self).dispatch(request, *args, **kwargs)
 
@@ -46,7 +47,7 @@ class IndexView(TemplateView):
         ret['settings'] = settings.C3PO
         ret['error'] = self.request.session.pop('error', None)
         ret['info'] = self.request.session.pop('info', None)
-        ret['logout_url'] = settings.LOGOUT_URL
+        ret['logout_url'] = settings.C3PO['LOGOUT_URL']
         return ret
 
     def post(self, request, *args, **kwargs):

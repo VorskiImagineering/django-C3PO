@@ -19,10 +19,9 @@ C3PO = {
     'GIT_REPOSITORY': 'git@git.hiddendata.co:mnogacki/testpo.git',
     'GIT_BRANCH': 'PO_test2',
     'SOURCE': 'PO Translator',
+    'LOGIN_URL': 'auth_login',
+    'LOGOUT_URL': 'auth_logout',
 }
-
-LOGIN_URL = 'auth_login'
-LOGOUT_URL = 'auth_logout'
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
