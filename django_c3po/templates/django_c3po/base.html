@@ -1,3 +1,4 @@
+{% load url from future %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,7 +16,7 @@
         {% if user.is_authenticated %}
         <ul class="nav">
             <li><a href="#"><i class="icon-user icon-white"></i> {{ user.username }}</a></li>
-            <li><a href="{% url 'django.contrib.auth.views.logout' %}">{% trans "Logout" %}</a></li>
+            <li><a href="{% url logout_url %}">{% trans "Logout" %}</a></li>
         </ul>
         {% endif %}
     </div>

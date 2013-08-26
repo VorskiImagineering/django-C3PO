@@ -21,6 +21,9 @@ C3PO = {
     'SOURCE': 'PO Translator',
 }
 
+LOGIN_URL = 'auth_login'
+LOGOUT_URL = 'auth_logout'
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 

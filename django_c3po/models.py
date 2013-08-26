@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from django.contrib.auth.models import AbstractBaseUser
+from django.db import models
 
 
-class Translator(AbstractBaseUser):
+class Translator(models.Model):
     """
     Model needed to add permissions to the User model.
     Permission defines whether user can synchronize translations in project.

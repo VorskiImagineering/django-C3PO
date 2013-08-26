@@ -7,6 +7,7 @@ import os
 from django.contrib.auth.decorators import permission_required
 from django.conf import settings
 from django.core import management
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
@@ -36,15 +37,18 @@ class IndexView(TemplateView):
 
     actions_allowed = ['synchronize', 'reset', 'makemessages', 'publish']
 
-    @method_decorator(permission_required('django_c3po.can_translate', login_url='django.contrib.auth.views.login'))
-    def dispatch(self, *args, **kwargs):
-        return super(IndexView, self).dispatch(*args, **kwargs)
+    @method_decorator(permission_required('django_c3po.can_translate', login_url=reverse_lazy(settings.LOGIN_URL)))
+    def dispatch(self, request, *args, **kwargs):
+        # if not request.user.has_perm('django_c3po.can_translate'):
+        #     return redirect(settings.LOGIN_URL)
+        return super(IndexView, self).dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
         ret = super(IndexView, self).get_context_data(*args, **kwargs)
         ret['settings'] = settings.C3PO
         ret['error'] = self.request.session.pop('error', None)
         ret['info'] = self.request.session.pop('info', None)
+        ret['logout_url'] = settings.LOGOUT_URL
         return ret
 
     def post(self, request, *args, **kwargs):

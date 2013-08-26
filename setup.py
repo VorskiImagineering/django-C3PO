@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='django-C3PO',
-    version='0.1.1',
+    version='0.1.2',
     packages=['django_c3po'],
     url='https://github.com/VorskiImagineering/django-C3PO',
     license='MIT',
@@ -15,11 +15,11 @@ setup(
 locale folder with translations to .ods format and sending them to Google Spreadsheets.\n
 This Django application provides panel where user can synchronize translations with GDocs and it gives possibility
 to push all translations on git and checkout last commit.''',
-    install_requires=['gdata==2.0.18', 'c3po==0.0.1'],
+    install_requires=['gdata==2.0.18', 'c3po==0.1.5'],
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Intended Audience :: Developers',
+        'IntendedAudience :: Developers',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.6',
