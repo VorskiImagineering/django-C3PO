@@ -17,7 +17,7 @@ Quick start
 ```python
 INSTALLED_APPS = (
     ...
-    'django-C3PO',
+    'django_c3po',
 )
 ```
 
@@ -42,7 +42,7 @@ C3PO = {
 3. Include the po_translator URLconf in your project urls.py like this::
 
 ```python
-url(r'^c3po/', include('django-C3PO.urls')),
+url(r'^c3po/', include('django_c3po.urls')),
 ```
 
 4. Start the development server, visit http://127.0.0.1:8000/admin/
