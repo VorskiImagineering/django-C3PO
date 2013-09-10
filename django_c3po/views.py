@@ -105,10 +105,11 @@ class IndexView(TemplateView):
         return self.render_podocs_response(request, info, error)
 
     def reset(self, request, *args, **kwargs):
-        communicator = Communicator(email, password, url, source, temp_path)
+        communicator = Communicator(email, password, url, source, temp_path,
+                                    languages, locale_root, po_files_path, header)
 
         info, error = git_checkout(git_branch, locale_root)
-        communicator.upload(languages, locale_root, po_files_path)
+        communicator.upload()
 
         if info == '':
             info = _('Changes have been reverted')
