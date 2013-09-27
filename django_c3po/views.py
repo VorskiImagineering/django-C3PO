@@ -14,8 +14,8 @@ from django.utils.translation import ugettext as _
 from django.views.generic.base import TemplateView
 from signals import post_compilemessages
 
-from c3po.mod.communicator import Communicator, git_push, git_checkout, PODocsError
-
+from c3po.mod.communicator import get_communicator, git_push, git_checkout, PODocsError
+from c3po.conf import settings as c3po_settings
 
 log = logging.getLogger('django_c3po')
 
@@ -31,6 +31,11 @@ header = settings.C3PO['HEADER']
 git_repository = settings.C3PO['GIT_REPOSITORY']
 git_branch = settings.C3PO['GIT_BRANCH']
 login_url = settings.C3PO['LOGIN_URL']
+
+
+c3po_settings.SOURCE_FILE_PREFIX = settings.C3PO['SOURCE_FILE_PREFIX']
+c3po_settings.SOURCE_FILE_SUFFIX = settings.C3PO['SOURCE_FILE_SUFFIX']
+Communicator = get_communicator(settings.C3PO['SOURCE_TYPE'])
 
 
 class IndexView(TemplateView):

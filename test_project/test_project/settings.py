@@ -8,12 +8,12 @@ import os
 ROOT_DIR = os.path.realpath(os.path.dirname(__file__))
 
 C3PO = {
-    'LANGUAGES': ['en', 'pl', 'jp'],
+    'LANGUAGES': ['en_EN', 'pl_PL', 'jp_JP'],
     'EMAIL': 'ttestt123321@gmail.com',
     'PASSWORD': 'zxcasdqwe.',
-    'URL': 'https://docs.google.com/spreadsheet/ccc?key=0AnVOHClWGpLZdGRuQVlrWG5Ia3QtOHJEWWpmZVYyYnc#gid=0',
+    'URL': 'https://docs.google.com/spreadsheet/ccc?key=0AnVOHClWGpLZdGxMQklHNXdtb0c1QzBaRXBXaFBNN2c#gid=0',
     'HEADER': '# translated with django_c3po\n',
-    'LOCALE_ROOT': os.path.join('conf', 'locale'),
+    'LOCALE_ROOT': os.path.join('conf', 'locale', 'json_test'),
     'PO_FILES_PATH': 'LC_MESSAGES',
     'TEMP_PATH': 'temp',
     'GIT_REPOSITORY': 'git@git.hiddendata.co:mnogacki/testpo.git',
@@ -21,6 +21,9 @@ C3PO = {
     'SOURCE': 'PO Translator',
     'LOGIN_URL': 'auth_login',
     'LOGOUT_URL': 'auth_logout',
+    'SOURCE_TYPE': 'JSON',
+    'SOURCE_FILE_PREFIX': 'lang_',
+    'SOURCE_FILE_SUFFIX': '.js',
 }
 
 DEBUG = True
