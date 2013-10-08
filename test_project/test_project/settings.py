@@ -11,7 +11,8 @@ C3PO = {
     'LANGUAGES': ['en', 'pl', 'jp'],
     'EMAIL': 'ttestt123321@gmail.com',
     'PASSWORD': 'zxcasdqwe.',
-    'URL': 'https://docs.google.com/spreadsheet/ccc?key=0AnVOHClWGpLZdGRuQVlrWG5Ia3QtOHJEWWpmZVYyYnc#gid=0',
+    'URL': 'https://docs.google.com/spreadsheet/ccc?' +
+           'key=0AnVOHClWGpLZdGRuQVlrWG5Ia3QtOHJEWWpmZVYyYnc#gid=0',
     'HEADER': '# translated with django_c3po\n',
     'LOCALE_ROOT': os.path.join('conf', 'locale'),
     'PO_FILES_PATH': 'LC_MESSAGES',
@@ -151,6 +152,8 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'djcelery',
+    'kombu.transport.django',
     'django_c3po',
 )
 
@@ -202,3 +205,9 @@ LOGGING = {
 }
 
 LOGIN_REDIRECT_URL = 'c3po_index'
+
+BROKER_URL = 'django://'
+CELERY_IMPORTS = ('test_app.models',)
+
+import djcelery
+djcelery.setup_loader()

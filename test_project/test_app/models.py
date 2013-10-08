@@ -8,6 +8,6 @@ from django_c3po.signals import post_compilemessages
 
 
 @receiver(post_compilemessages)
-def restart_server_callback(sender, **kwargs):
+def restart_server_callback(sender, *args, **kwargs):
     manage_path = os.path.join(settings.ROOT_DIR, '..', 'manage.py')
     os.system('touch ' + manage_path)

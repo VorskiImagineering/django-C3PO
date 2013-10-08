@@ -1,5 +1,6 @@
 {% extends "django_c3po/base.html" %}
 
+{% load url from future %}
 {% load i18n %}
 
 {% block content %}
@@ -52,7 +53,11 @@
     {% endif %}
 
     {% if info %}
-        <p class="alert alert-info">{{ info }}</p>
+        <p id="info" class="alert alert-info">{{ info }}</p>
+    {% endif %}
+
+    {% if task_id %}
+        <input id="task-url" type="hidden" value="{% url 'c3po_task' task_id=task_id %}" />
     {% endif %}
 
     <p class="text-info">

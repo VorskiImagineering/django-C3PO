@@ -1,20 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import json
+
 import logging
 import os
+
+from celery import task
+from celery.result import AsyncResult
 
 from django.contrib.auth.decorators import permission_required
 from django.conf import settings
 from django.core import management
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.shortcuts import render, redirect
+from django.core.urlresolvers import reverse_lazy
+from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
-from django.views.generic.base import TemplateView
-from signals import post_compilemessages
+from django.views.generic.base import TemplateView, View
 
 from c3po.mod.communicator import Communicator, git_push, git_checkout, PODocsError
+
+from signals import post_compilemessages
 
 
 log = logging.getLogger('django_c3po')
@@ -33,12 +40,29 @@ git_branch = settings.C3PO['GIT_BRANCH']
 login_url = settings.C3PO['LOGIN_URL']
 
 
+@task
+def synchronize_task():
+    communicator = Communicator(email, password, url, source, temp_path,
+                                languages, locale_root,
+                                po_files_path, header)
+
+    if not os.path.exists(locale_root):
+        os.makedirs(locale_root)
+
+    communicator.synchronize()
+
+    management.call_command('compilemessages', verbosity=0)
+
+    post_compilemessages.send(sender=None)
+
+
 class IndexView(TemplateView):
     template_name = 'django_c3po/index.html'
 
     actions_allowed = ['synchronize', 'reset', 'makemessages', 'publish']
 
-    @method_decorator(permission_required('django_c3po.can_translate', login_url=reverse_lazy(login_url)))
+    @method_decorator(permission_required('django_c3po.can_translate',
+                                          login_url=reverse_lazy(login_url)))
     def dispatch(self, request, *args, **kwargs):
         return super(IndexView, self).dispatch(request, *args, **kwargs)
 
@@ -47,6 +71,7 @@ class IndexView(TemplateView):
         ret['settings'] = settings.C3PO
         ret['error'] = self.request.session.pop('error', None)
         ret['info'] = self.request.session.pop('info', None)
+        ret['task_id'] = self.request.session.pop('task_id', None)
         ret['logout_url'] = settings.C3PO['LOGOUT_URL']
         return ret
 
@@ -64,25 +89,17 @@ class IndexView(TemplateView):
             error = PODocsError(_('Wrong action'))
         return self.render_podocs_response(request, error=error)
 
-    def render_podocs_response(self, request, info=None, error=None, *args, **kwargs):
+    def render_podocs_response(self, request, info=None, error=None,
+                               *args, **kwargs):
         request.session['error'] = error
         request.session['info'] = info
         return redirect('c3po_index')
 
     def synchronize(self, request, *args, **kwargs):
-        communicator = Communicator(email, password, url, source, temp_path,
-                                    languages, locale_root, po_files_path, header)
+        task_id = synchronize_task.delay()
+        request.session['task_id'] = task_id
 
-        if not os.path.exists(locale_root):
-            os.makedirs(locale_root)
-
-        communicator.synchronize()
-
-        management.call_command('compilemessages', verbosity=0)
-
-        post_compilemessages.send(sender=self)
-
-        info = _('Translations synchronized')
+        info = _('Synchronizing translations.')
         return self.render_podocs_response(request, info)
 
     def makemessages(self, request, *args, **kwargs):
@@ -100,13 +117,15 @@ class IndexView(TemplateView):
             error = _('Enter git message')
             return self.render_podocs_response(request, error=error)
 
-        info, error = git_push(git_message, git_repository, git_branch, locale_root)
+        info, error = git_push(git_message, git_repository,
+                               git_branch, locale_root)
 
         return self.render_podocs_response(request, info, error)
 
     def reset(self, request, *args, **kwargs):
         communicator = Communicator(email, password, url, source, temp_path,
-                                    languages, locale_root, po_files_path, header)
+                                    languages, locale_root,
+                                    po_files_path, header)
 
         info, error = git_checkout(git_branch, locale_root)
         communicator.upload()
@@ -115,3 +134,10 @@ class IndexView(TemplateView):
             info = _('Changes have been reverted')
 
         return self.render_podocs_response(request, info, error)
+
+
+class TaskStateView(View):
+
+    def get(self, request, task_id, *args, **kwargs):
+        res = AsyncResult(task_id).ready()
+        return HttpResponse(json.dumps(res), content_type='application/json')

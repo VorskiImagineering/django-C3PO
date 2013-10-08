@@ -9,6 +9,9 @@ possibility to push all translations on git and checkout last commit.
 After synchronization django-C3PO sends post_compilemessages signal which notifies that translations are ready.
 Server restart is needed then to reload compiled .mo files into application.
 
+Application uses celery to prevent timeout when synchronizing translations.
+Be sure to properly configure it before use.
+
 Quick start
 -----------
 
@@ -45,12 +48,30 @@ C3PO = {
 url(r'^c3po/', include('django_c3po.urls')),
 ```
 
-4. Start the development server, visit http://127.0.0.1:8000/admin/
+4. Add post_compilemessages signal receiver for server restart:
+```python
+@receiver(post_compilemessages)
+def restart_server_callback(sender, *args, **kwargs):
+    manage_path = os.path.join(settings.ROOT_DIR, '..', 'manage.py')
+    os.system('touch ' + manage_path)
+```
+
+5. Configure celery in your settings:
+```python
+BROKER_URL = 'django://'
+CELERY_IMPORTS = ('test_app.models',)
+
+import djcelery
+djcelery.setup_loader()
+```
+Be sure to include module with your signal receiver in CELERY_IMPORTS.
+
+6. Start the development server, visit http://127.0.0.1:8000/admin/
    and add permission 'django-C3PO.can_translate' to user.
 
-5. Visit http://127.0.0.1:8000/c3po/ and log in as user with can_translate permission.
+7. Visit http://127.0.0.1:8000/c3po/ and log in as user with can_translate permission.
 
-6. Use buttons to synchronize, make messages and git operations.
+8. Use buttons to synchronize, make messages and git operations.
 
 Usage
 -----

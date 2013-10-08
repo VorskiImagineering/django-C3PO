@@ -1,3 +1,5 @@
 django==1.5.1
 gdata==2.0.18
 c3po==0.1.5
+celery==3.0.23
+django-celery==3.0.23
