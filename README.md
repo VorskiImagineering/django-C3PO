@@ -12,6 +12,10 @@ Server restart is needed then to reload compiled .mo files into application.
 Application uses celery to prevent timeout when synchronizing translations.
 Be sure to properly configure it before use.
 
+django-C3PO includes custom compilemessages command called verbosecompilemessages.
+It is needed to write msgfmt errors on the stderr, because standard compile messages
+does not show them.
+
 Quick start
 -----------
 
@@ -72,7 +76,7 @@ Be sure to include module with your signal receiver in CELERY_IMPORTS.
 7. Visit http://127.0.0.1:8000/c3po/ and log in as user with can_translate permission.
 
 8. Use buttons to synchronize, make messages and git operations.
-
+-
 Usage
 -----
 After configuration and logging into the translator's panel, you will see basic configuration info with

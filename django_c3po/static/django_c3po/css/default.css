@@ -1,0 +1,19 @@
+#info {
+    display: none;
+}
+
+#info.visible {
+    display: block;
+}
+
+#error {
+    display: none;
+}
+
+#error.visible {
+    display: block;
+}
+
+.navbar-inverse .navbar-inner {
+    border-radius: 0;
+}

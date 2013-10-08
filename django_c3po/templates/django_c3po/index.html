@@ -48,13 +48,9 @@
         </div>
     </form>
 
-    {% if error %}
-        <p class="alert alert-error">{{ error }}</p>
-    {% endif %}
+    <p id="info" class="alert alert-info {% if info %}visible{% endif %}">{% if info %}{{ info }}{% endif %}</p>
 
-    {% if info %}
-        <p id="info" class="alert alert-info">{{ info }}</p>
-    {% endif %}
+    <p id="error" class="alert alert-error {% if error %}visible{% endif %}">{% if error %}{{ error }}{% endif %}</p>
 
     {% if task_id %}
         <input id="task-url" type="hidden" value="{% url 'c3po_task' task_id=task_id %}" />

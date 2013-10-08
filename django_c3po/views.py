@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from StringIO import StringIO
+
 import json
 
 import logging
@@ -19,7 +21,8 @@ from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _
 from django.views.generic.base import TemplateView, View
 
-from c3po.mod.communicator import Communicator, git_push, git_checkout, PODocsError
+from c3po.mod.communicator \
+    import Communicator, git_push, git_checkout, PODocsError
 
 from signals import post_compilemessages
 
@@ -51,9 +54,16 @@ def synchronize_task():
 
     communicator.synchronize()
 
-    management.call_command('compilemessages', verbosity=0)
+    stderr = StringIO()
+
+    management.call_command('verbosecompilemessages',
+                            verbosity=0, stderr=stderr)
+
+    stderr.seek(0)
 
     post_compilemessages.send(sender=None)
+
+    return stderr.read()
 
 
 class IndexView(TemplateView):
@@ -139,5 +149,15 @@ class IndexView(TemplateView):
 class TaskStateView(View):
 
     def get(self, request, task_id, *args, **kwargs):
-        res = AsyncResult(task_id).ready()
-        return HttpResponse(json.dumps(res), content_type='application/json')
+        sync_task = AsyncResult(task_id)
+        data = {
+            'ready': sync_task.ready()
+        }
+        if sync_task.ready():
+            result = str(sync_task.result)
+            if result.strip():
+                data['error'] = result.strip()
+            else:
+                data['info'] = _('Translations synchronized.')
+
+        return HttpResponse(json.dumps(data), content_type='application/json')
