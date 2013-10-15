@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='django-C3PO',
-    version='0.2.1',
+    version='0.2.2',
     packages=['django_c3po'],
     url='https://github.com/VorskiImagineering/django-C3PO',
     license='MIT',
@@ -19,7 +19,7 @@ setup(
     on git and checkout last commit.\n
     django-C3PO uses celery since version 0.2. Be sure to properly configure
     it before using application.''',
-    install_requires=['django==1.5.1', 'gdata==2.0.18', 'c3po==0.1.5',
+    install_requires=['django==1.5.1', 'gdata==2.0.18', 'c3po==0.2.0',
                       'celery==3.0.23', 'django-celery==3.0.23'],
     classifiers=[
         'Environment :: Web Environment',
