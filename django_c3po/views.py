@@ -83,7 +83,7 @@ class IndexView(TemplateView):
 
         communicator.synchronize()
 
-        management.call_command('compilemessages', verbosity=0)
+#        management.call_command('compilemessages', verbosity=0)
 
         post_compilemessages.send(sender=self)
 
