@@ -43,33 +43,57 @@ git_branch = settings.C3PO['GIT_BRANCH']
 login_url = settings.C3PO['LOGIN_URL']
 
 
-@task
-def synchronize_task():
-    communicator = Communicator(email, password, url, source, temp_path,
-                                languages, locale_root,
-                                po_files_path, header)
-
+def _prepare_locale_root():
     if not os.path.exists(locale_root):
         os.makedirs(locale_root)
 
-    communicator.synchronize()
 
+def _compile_messages():
     stderr = StringIO()
-
     management.call_command('verbosecompilemessages',
                             verbosity=0, stderr=stderr)
-
     stderr.seek(0)
-
     post_compilemessages.send(sender=None)
 
     return stderr.read()
 
 
+@task
+def download_task():
+    communicator = Communicator(email, password, url, source, temp_path,
+                                languages, locale_root,
+                                po_files_path, header)
+    _prepare_locale_root()
+    communicator.download()
+    res = _compile_messages()
+    return res
+
+
+@task
+def synchronize_task():
+    communicator = Communicator(email, password, url, source, temp_path,
+                                languages, locale_root,
+                                po_files_path, header)
+    _prepare_locale_root()
+    communicator.synchronize()
+    res = _compile_messages()
+    return res
+
+
+@task
+def makemessages_task():
+    _prepare_locale_root()
+    for lang in languages:
+        management.call_command(
+            'makemessages', locale=lang, verbosity=0, symlinks=True)
+    return ''
+
+
 class IndexView(TemplateView):
     template_name = 'django_c3po/index.html'
 
-    actions_allowed = ['synchronize', 'reset', 'makemessages', 'publish']
+    actions_allowed = ['synchronize', 'download',
+                       'reset', 'makemessages', 'publish']
 
     @method_decorator(permission_required('django_c3po.can_translate',
                                           login_url=reverse_lazy(login_url)))
@@ -112,13 +136,19 @@ class IndexView(TemplateView):
         info = _('Synchronizing translations.')
         return self.render_podocs_response(request, info)
 
-    def makemessages(self, request, *args, **kwargs):
-        if not os.path.exists(locale_root):
-            os.makedirs(locale_root)
-        for lang in languages:
-            management.call_command('makemessages', locale=lang, verbosity=0)
+    def download(self, request, *args, **kwargs):
+        task_id = download_task.delay()
+        request.session['task_id'] = task_id
 
-        info = _('Messages made for languages: ' + ', '.join(languages))
+        info = _('Downloading translations.')
+        return self.render_podocs_response(request, info)
+
+    def makemessages(self, request, *args, **kwargs):
+        task_id = makemessages_task.delay()
+        request.session['task_id'] = task_id
+
+        info = _('Making messages for languages: {0}.'.format(
+            ', '.join(languages)))
         return self.render_podocs_response(request, info)
 
     def publish(self, request, *args, **kwargs):
@@ -158,6 +188,6 @@ class TaskStateView(View):
             if result.strip():
                 data['error'] = result.strip()
             else:
-                data['info'] = _('Translations synchronized.')
+                data['info'] = _('Completed.')
 
         return HttpResponse(json.dumps(data), content_type='application/json')
