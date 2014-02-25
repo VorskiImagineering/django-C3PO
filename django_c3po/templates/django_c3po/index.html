@@ -41,7 +41,6 @@
         <div class="btn-group">
             <button type="submit" class="btn btn-success" name="action" value="synchronize">{% trans 'Synchronize' %}</button>
             <button type="submit" class="btn btn-primary" name="action" value="download">{% trans 'Download' %}</button>
-            <button type="submit" class="btn" name="action" value="makemessages">{% trans 'Make messages' %}</button>
         </div>
         <div class="btn-group">
             <button type="submit" class="btn" name="action" value="publish">{% trans 'Publish' %}</button>
@@ -61,7 +60,6 @@
         <ul class="">
             <li><strong>{% trans 'Synchronize' %}</strong> - {% trans 'Synchronizes translations in local files with GDoc state. If project has new expressions which are not in the spreadsheet, GDoc is updated with this entries.' %}</li>
             <li><strong>{% trans 'Download' %}</strong> - {% trans 'Download translations and overwrite current messages in po files.' %}</li>
-            <li><strong>{% trans 'Make messages' %}</strong> - {% trans 'Runs makemessages command updating po files with new expressions to translate.' %}</li>
             <li><strong>{% trans 'Publish' %}</strong> - {% trans 'Pushes current po files to git repository.' %}</li>
             <li><strong>{% trans 'Reset' %}</strong> - {% trans 'Reverts current changes and checkouts project to last commit. Note that changes are also reverted in spreadsheet, so all new translations will be lost.' %}</li>
         </ul>

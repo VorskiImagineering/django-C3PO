@@ -71,22 +71,16 @@ def download_task():
 
 @task
 def synchronize_task():
-    communicator = Communicator(email, password, url, source, temp_path,
-                                languages, locale_root,
-                                po_files_path, header)
-    _prepare_locale_root()
-    communicator.synchronize()
-    res = _compile_messages()
-    return res
-
-
-@task
-def makemessages_task():
     _prepare_locale_root()
     for lang in languages:
         management.call_command(
             'makemessages', locale=lang, verbosity=0, symlinks=True)
-    return ''
+    communicator = Communicator(email, password, url, source, temp_path,
+                                languages, locale_root,
+                                po_files_path, header)
+    communicator.synchronize()
+    res = _compile_messages()
+    return res
 
 
 class IndexView(TemplateView):
@@ -141,14 +135,6 @@ class IndexView(TemplateView):
         request.session['task_id'] = task_id
 
         info = _('Downloading translations.')
-        return self.render_podocs_response(request, info)
-
-    def makemessages(self, request, *args, **kwargs):
-        task_id = makemessages_task.delay()
-        request.session['task_id'] = task_id
-
-        info = _('Making messages for languages: {0}.'.format(
-            ', '.join(languages)))
         return self.render_podocs_response(request, info)
 
     def publish(self, request, *args, **kwargs):
