@@ -19,7 +19,7 @@ setup(
     on git and checkout last commit.\n
     django-C3PO uses celery since version 0.2. Be sure to properly configure
     it before using application.''',
-    install_requires=['django==1.5.1', 'gdata==2.0.18', 'c3po==0.3.0',
+    install_requires=['django==1.11.29', 'gdata==2.0.18', 'c3po==0.3.0',
                       'celery==3.0.23', 'django-celery==3.0.23'],
     classifiers=[
         'Environment :: Web Environment',
